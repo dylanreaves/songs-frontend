@@ -113,7 +113,7 @@ function PlaylistDetail(props) {
         playlistId: playlistId,
       }
 
-      const response = await axios.post(`http://localhost:3000/api/songs/?playlistId=${playlistId}`, body)
+      const response = await axios.post(BASE_URL + `/api/songs/?playlistId=${playlistId}`, body)
       const newSong = await response.data
       playlist.Songs.push(newSong)
 
