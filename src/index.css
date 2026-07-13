@@ -26,6 +26,10 @@ a {
   text-decoration: none;
 }
 
+nav {
+  --bg: #0f0f0f;
+}
+
 .grid {
   display: flex;
   flex-wrap: wrap;
