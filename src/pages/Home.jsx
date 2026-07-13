@@ -8,10 +8,12 @@ function Home() {
 
   const [playlists, setPlaylists] = useState([])
 
+  const BASE_URL = import.meta.env.VITE_API_URL
+
   useEffect(() => {
     async function loadPlaylists() {
       try {
-        const response = await fetch(`http://localhost:3000/api/playlists`)
+        const response = await fetch(BASE_URL + `/api/playlists`)
         if (!response.ok) {
           throw new Error("Failed to load playlists:", response.status)
         }

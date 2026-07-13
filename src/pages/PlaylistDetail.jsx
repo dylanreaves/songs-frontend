@@ -16,10 +16,12 @@ function PlaylistDetail(props) {
   const params = useParams()
   const playlistId = Number(params.id)
 
+  const BASE_URL = import.meta.env.VITE_API_URL
+
   useEffect(() => {
     async function loadPlaylist() {
       try {
-        const response = await fetch(`http://localhost:3000/api/playlists/${playlistId}`)
+        const response = await fetch(BASE_URL + `/api/playlists/${playlistId}`)
         if (!response.ok) {
           throw new Error("Failed to load playlist:", response.status)
         }
@@ -127,7 +129,7 @@ function PlaylistDetail(props) {
 
   async function handleRemoveSong(event, songId) {
     //console.log("Song ID:", songId)
-    const response = await axios.delete(`http://localhost:3000/api/songs/${songId}`, {
+    const response = await axios.delete(BASE_URL + `/api/songs/${songId}`, {
       params: {songid: songId}
     })
     const updatedSongs = playlist.Songs.filter((song) => {return song.id !== songId})
