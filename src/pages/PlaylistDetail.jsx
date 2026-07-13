@@ -64,15 +64,19 @@ function PlaylistDetail(props) {
     function convertToNum(val) {
       const invalid = -1
       if (Number.isNaN(Number(val))) {
-        // Is a string
-        console.log("Is a string.")
+        //console.log("Is a string.")
         if (!value.includes(':')) {
           return invalid
         }
 
+        // Split formatted time by the ':' and reverse it so we have SS:MM:HH instead of HH:MM:SS
+        const split_Time = value.split(':').reverse().map(Number)
+        const seconds = split_Time[0] || 0
+        const mins = split_Time[1] || 0
+        const hours = split_Time[2] || 0
+        return (hours * 3600) + (mins * 60) + seconds
       } else {
-        // Is a number
-        console.log("Is a number.")
+        //console.log("Is a number.")
         return Number(value)
       }
       return invalid
