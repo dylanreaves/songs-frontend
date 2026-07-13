@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
+import axios from "axios"
 
 function SongCard(props) {
   console.log(props)
@@ -10,6 +11,9 @@ function SongCard(props) {
   const artist = songObj.artist
   const description = songObj.description
   const duration = songObj.duration
+
+  
+  const handleRemove = props.onRemove
 
   // Converts time in seconds into the format XX:XX:XX Hrs/Mins/Secs
   function formatDuration(time) {
@@ -31,6 +35,7 @@ function SongCard(props) {
           <h3> {title} </h3>
           <p> {artist} </p>
           <p> {formatDuration(duration)} </p>
+          <button onClick={(event) => handleRemove(event, songId)}> Remove </button>
       </div>
     </>
   )

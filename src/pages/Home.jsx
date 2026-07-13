@@ -3,9 +3,10 @@ import NavBar from '../components/Navbar'
 import PlaylistCell from '../components/PlaylistCard'
 
 function Home() {
-  const [playlists, setPlaylists] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+
+  const [playlists, setPlaylists] = useState([])
 
   useEffect(() => {
     async function loadPlaylists() {
@@ -19,9 +20,7 @@ function Home() {
         if (!data) {
           throw new Error("Failed to get playlists:", response.status)
         }
-
         setPlaylists(data)
-
       } catch(error) {
         console.log(error)
         setError(error)
@@ -33,8 +32,8 @@ function Home() {
     loadPlaylists()
   }, [])
 
-  if (loading) return <p> Loading Playlists...</p>
-  if (error) return <p> Error: {error} </p>
+  if (loading) return <p> Loading Playlists... </p>
+  if (error) return <p> Error: {error.message} </p>
 
   return (
     <>
@@ -48,10 +47,12 @@ function Home() {
       <div className="grid">
         {/* Map playlists here */}
         {playlists.map((list) => {
-          return <PlaylistCell 
-          key={list.id}
-          list={list}
-          />
+          return (
+            <PlaylistCell 
+              key={list.id}
+              list={list}
+            />
+          )
         })
 
         }
