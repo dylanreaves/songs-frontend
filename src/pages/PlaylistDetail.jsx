@@ -44,21 +44,21 @@ function PlaylistDetail(props) {
   function handleTitleInput(event) {
     const input = event.target
     const value = input.value
-    //console.log("title:", value)
+    // console.log("title:", value)
     setTitle(value)
   }
 
   function handleArtistInput(event) {
     const input = event.target
     const value = input.value
-    //console.log("artist:", value)
+    // console.log("artist:", value)
     setArtist(value)
   }
 
   function handleDurationInput(event) {
     const input = event.target
     const value = input.value
-    //console.log("duration:", value)
+    // console.log("duration:", value)
 
     // TODO: Optimize this the XX:XX does not work yet.
     function convertToNum(val) {
@@ -76,7 +76,7 @@ function PlaylistDetail(props) {
         const hours = split_Time[2] || 0
         return (hours * 3600) + (mins * 60) + seconds
       } else {
-        //console.log("Is a number.")
+        // console.log("Is a number.")
         return Number(value)
       }
       return invalid
@@ -85,7 +85,7 @@ function PlaylistDetail(props) {
     // If value is in the format HH:MM:SS convert it into a number.
     // Makes sense to save it as a number since the backend only deals with integers for duration.
     const converted = convertToNum(value)
-    console.log(converted)
+    //console.log(converted)
     setDuration(converted)
   }
 
@@ -132,7 +132,7 @@ function PlaylistDetail(props) {
   }
 
   async function handleRemoveSong(event, songId) {
-    //console.log("Song ID:", songId)
+    // console.log("Song ID:", songId)
     const response = await axios.delete(BASE_URL + `/api/songs/${songId}`, {
       params: {songid: songId}
     })

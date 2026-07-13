@@ -7,12 +7,13 @@ function SongCard(props) {
   const songObj = props.song
   const songId = songObj.id
 
+  // Propreties
   const title = songObj.title
   const artist = songObj.artist
   const description = songObj.description
   const duration = songObj.duration
-
   
+  // Functions
   const handleRemove = props.onRemove
 
   // Converts time in seconds into the format XX:XX:XX Hrs/Mins/Secs
