@@ -168,8 +168,8 @@ function PlaylistDetail(props) {
   return (
     <>
       <Link to="/"> Back to playlists </Link>
-      <h3>{playlist.title}</h3>
-      <p>{playlist.description}</p>
+      <h3> Playlist: {playlist.title}</h3>
+      <p> Description: {playlist.description}</p>
       <h3>Add New Song</h3>
 
       {/* Wrap inputs in a form so when the button is pressed */}
