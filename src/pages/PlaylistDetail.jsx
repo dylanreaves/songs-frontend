@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useParams, useNavigate } from 'react-router'
 import NavBar from '../components/Navbar'
 import SongCard from '../components/SongCard'
 import axios from "axios"
 
 function PlaylistDetail(props) {
+  const navigate = useNavigate()
+  // const playlists = props.playlists
+  // const setPlaylists = props.setPlaylists
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
@@ -12,6 +15,7 @@ function PlaylistDetail(props) {
   const [title, setTitle] = useState('')
   const [artist, setArtist] = useState('')
   const [duration, setDuration] = useState(0)
+  const [confirmDelete, setConfirmDelete] = useState(false)
 
   const params = useParams()
   const playlistId = Number(params.id)
@@ -23,10 +27,12 @@ function PlaylistDetail(props) {
       try {
         const response = await fetch(BASE_URL + `/api/playlists/${playlistId}`)
         if (!response.ok) {
+          navigate('*')
           throw new Error("Failed to load playlist:", response.status)
         }
         const data = await response.json()
         if (!data) {
+          navigate('*')
           throw new Error("Failed to get playlist:", response.status)
         }
         setPlaylist(data)
@@ -41,52 +47,71 @@ function PlaylistDetail(props) {
     loadPlaylist()
   }, [])
 
-  function handleTitleInput(event) {
+  function handleRemovePlaylist() {
+    if (!confirmDelete) {
+      // Prompt confirmation
+      setConfirmDelete(true)
+    } else {
+      // Remove the playlist
+      async function remove() {
+        const response = await axios.delete(BASE_URL + `/api/playlists/${playlistId}`)
+        if (response.status === 204) {
+          // Problem: can't use setPlaylists here because it's 
+          // undefined and we need to get it from Home.jsx
+          // setPlaylists(prev => {
+          //   return prev.map((playlist) => {
+          //     return Number(playlist.id) !== playlistId
+          //   })
+          // })
+          
+          // Solution: We don't actually have to filter here we can just navigate back to home
+          // after the playlist gets deleted.
+          navigate('/')
+        }
+      }
+
+      remove()
+    }
+  }
+
+  // Stores all validation functions required by inputs in a single object for quick access.
+  const validationFuncs = {}
+  validationFuncs["Duration"] = function convertToNum(val) {
+    // If value is in the format HH:MM:SS convert it into a number.
+    // Makes sense to save it as a number since the backend only deals with integers for duration.
+    const invalid = -1
+    if (Number.isNaN(Number(val))) {
+      //console.log("Is a string.")
+      if (!val.includes(':')) {
+        return invalid
+      }
+
+      // Split formatted time by the ':' and reverse it so we have SS:MM:HH instead of HH:MM:SS
+      const split_Time = val.split(':').reverse().map(Number)
+      const seconds = split_Time[0] || 0
+      const mins = split_Time[1] || 0
+      const hours = split_Time[2] || 0
+      return (hours * 3600) + (mins * 60) + seconds
+    } else {
+      // console.log("Is a number.")
+      return Number(val)
+    }
+    return invalid
+  }
+
+  //console.log(validationFuncs.duration)
+
+  function handleInput(event, propreties) {
     const input = event.target
     const value = input.value
     // console.log("title:", value)
-    setTitle(value)
-  }
 
-  function handleArtistInput(event) {
-    const input = event.target
-    const value = input.value
-    // console.log("artist:", value)
-    setArtist(value)
-  }
+    const validFunc = validationFuncs[propreties.input_type]
+    const setFunc = propreties.setFunc
 
-  function handleDurationInput(event) {
-    const input = event.target
-    const value = input.value
-    // console.log("duration:", value)
-
-    // TODO: Optimize this the XX:XX does not work yet.
-    function convertToNum(val) {
-      const invalid = -1
-      if (Number.isNaN(Number(val))) {
-        //console.log("Is a string.")
-        if (!value.includes(':')) {
-          return invalid
-        }
-
-        // Split formatted time by the ':' and reverse it so we have SS:MM:HH instead of HH:MM:SS
-        const split_Time = value.split(':').reverse().map(Number)
-        const seconds = split_Time[0] || 0
-        const mins = split_Time[1] || 0
-        const hours = split_Time[2] || 0
-        return (hours * 3600) + (mins * 60) + seconds
-      } else {
-        // console.log("Is a number.")
-        return Number(value)
-      }
-      return invalid
-    }
-    
-    // If value is in the format HH:MM:SS convert it into a number.
-    // Makes sense to save it as a number since the backend only deals with integers for duration.
-    const converted = convertToNum(value)
-    //console.log(converted)
-    setDuration(converted)
+    // If a validation function exists run it and store the value otherwise default to the old value
+    const newValue = validFunc ? validFunc(value) : value
+    newValue ? setFunc(newValue) : setFunc(value)
   }
 
   async function handleAddSong(event) {
@@ -96,13 +121,7 @@ function PlaylistDetail(props) {
     // console.log("duration:", duration)
 
     function isValid() {
-      if (title.length <= 0) {
-        return false
-      }
-      if (artist.length <= 0) {
-        return false
-      }
-      if (duration <= 0) {
+      if (title.length <= 0 || artist.length <= 0 || duration <= 0) {
         return false
       }
       return true
@@ -156,24 +175,26 @@ function PlaylistDetail(props) {
       {/* Wrap inputs in a form so when the button is pressed */}
       <form onSubmit={(event) => handleAddSong(event)}>
         {/* Input given here should just be a string */}
-        <input type='text' placeholder='Title' onChange={(event) => handleTitleInput(event)} />
+        <input type='text' placeholder='Title' onChange={(event) => handleInput(event, {setFunc: setTitle, input_type: "Title"})} />
         
         {/* Input given here should just be a string */}
-        <input type='text' placeholder='Artist' onChange={(event) => handleArtistInput(event)} /> 
+        <input type='text' placeholder='Artist' onChange={(event) => handleInput(event, {setFunc: setArtist, input_type: "Artist"})} /> 
 
         {/* Input given here should either be an integer in seconds or the format XX:XX */}
-        <input type='duration' placeholder='Duration' onChange={(event) => handleDurationInput(event)} /> 
+        <input type='duration' placeholder='Duration' onChange={(event) => handleInput(event, {setFunc: setDuration, input_type: "Duration"})} /> 
         
         <button type='submit'> Add Song </button>
       </form>
 
       <h3>Songs</h3>
 
+      {/* Loads song cards on a given playlist */}
       {!loading && playlist?.Songs && (
         <div className="grid">
           {playlist.Songs.map((song) => {
             return (
               <SongCard
+                class="song_card"
                 key={song.id}
                 song={song}
                 onRemove={handleRemoveSong}
@@ -181,6 +202,16 @@ function PlaylistDetail(props) {
             )
           })}
         </div>
+      )}
+
+      {/* Delete button changes based on confirmDelete useState */}
+      {confirmDelete ? (
+        <div>
+          <button className="removeButton" onClick={(event) => handleRemovePlaylist(event)}> Confirm Delete </button>
+          <button onClick={() => setConfirmDelete(false)}> Cancel </button>
+        </div>
+      ) : (
+        <button className="removeButton" onClick={(event) => handleRemovePlaylist(event)}> Delete Playlist </button>
       )}
     </>
   )

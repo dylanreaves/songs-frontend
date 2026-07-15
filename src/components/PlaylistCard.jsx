@@ -5,8 +5,8 @@ function PlaylistCard(props) {
   const playlistObj = props.list
   const playlistId = playlistObj.id
   const title = playlistObj.title
-  const song_count = playlistObj.Songs.length
-  console.log(props)
+  const song_count = playlistObj.Songs?.length || 0
+  //console.log(props)
 
   function displaySongCount(count) {
     if (count <= 0) {
@@ -19,7 +19,7 @@ function PlaylistCard(props) {
   return (
     <>
       <Link id={playlistId} to={`/playlists/${playlistId}`}>
-        <div className='card'>
+        <div className='playlist_card'>
           <h3> {title} </h3>
           <p> {displaySongCount(song_count)} </p>
         </div>

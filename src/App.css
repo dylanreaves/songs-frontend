@@ -1,0 +1,110 @@
+/* Essentially storing variables for later use using var(--name) */
+:root {
+    --bg-dark: #121212;
+    --card-bg: #181818;
+    --main-border: #303030;
+
+    --input-bg: #181818;
+    --input-border: #2e2e2e;
+
+    --button-green: #1db954;
+    --button-green-hover: #1ed760;
+
+    --remove-button: #e91429;
+    --remove-button-bright: #ff0019;
+    --remove-button-hover: #ac0e1e;
+    --remove-button-hover-bright: #ff0019;
+    
+    --text-main: #fff;
+    --text-main-button: #000000;
+    --text-sub: #b3b3b3;
+    --error: #e91429;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    margin: 0;
+    padding: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+form {
+    display: block;
+    margin-top: 0em;
+    unicode-bidi: isolate;
+}
+
+button {
+    background-color: var(--button-green);
+    color: var(--text-main-button);
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 10px;
+    font-weight: 700;
+}
+button:hover {
+    background-color: var(--button-green-hover);
+}
+
+.removeButton {
+    background-color: var(--remove-button);
+    color: var(--remove-button-bright);
+    border: 1px solid var(--remove-button);
+    color: var(--remove-button-hover);
+    border-color: var(--remove-button);
+    background-color: transparent;
+}
+.removeButton:hover {
+    background-color: var(--remove-button-hover-bright);
+    color: var(--text-main-button)
+}
+
+/* Controls the styling for playlist cards */
+.playlist_card {
+  border: 1px solid var(--main-border);
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 20px;
+
+}
+.playlist_card:hover {
+    background-color: var(--bg-dark);
+}
+
+/* Controls the styling for song cards */
+.song_card {
+  border: 1px solid var(--main-border);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 20px;
+  width: 100%
+}
+.song_card:hover {
+    background-color: var(--bg-dark);
+}
+
+input {
+    color: var(--text-main);
+    box-sizing: border-box;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+input:hover {
+    border-radius: 6px;
+}
+
+.hidden {
+    display: none;
+}

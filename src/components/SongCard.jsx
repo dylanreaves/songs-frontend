@@ -32,7 +32,7 @@ function SongCard(props) {
 
   return (
     <>
-      <div className='card'>
+      <div className='song_card'>
           <h3> {title} </h3>
           <p> {artist} </p>
           <p> {formatDuration(duration)} </p>

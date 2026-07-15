@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import NavBar from '../components/Navbar'
-import PlaylistCell from '../components/PlaylistCard'
+import PlaylistCard from '../components/PlaylistCard'
+import PlaylistForm from '../components/PlaylistForm'
 
 function Home() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
-
   const [playlists, setPlaylists] = useState([])
 
   const BASE_URL = import.meta.env.VITE_API_URL
@@ -15,11 +15,12 @@ function Home() {
       try {
         const response = await fetch(BASE_URL + `/api/playlists`)
         if (!response.ok) {
+          navigate('/*')
           throw new Error("Failed to load playlists:", response.status)
         }
         const data = await response.json()
-        console.log(data)
         if (!data) {
+          navigate('/*')
           throw new Error("Failed to get playlists:", response.status)
         }
         setPlaylists(data)
@@ -40,24 +41,27 @@ function Home() {
   return (
     <>
       <NavBar></NavBar>
-      
+
       <div>
-        <h3>All Playlists: </h3>
+        <h3> All Playlists </h3>
         <button> Create Playlist</button>
+        <PlaylistForm 
+          playlists={playlists} 
+          setPlaylists={setPlaylists} 
+          className="hidden" 
+        />
       </div>
 
       <div className="grid">
         {/* Map playlists here */}
         {playlists.map((list) => {
           return (
-            <PlaylistCell 
+            <PlaylistCard 
               key={list.id}
               list={list}
             />
           )
-        })
-
-        }
+        })}
       </div>
     </>
   )
