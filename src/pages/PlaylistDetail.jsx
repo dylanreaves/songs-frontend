@@ -6,8 +6,10 @@ import axios from "axios"
 
 function PlaylistDetail(props) {
   const navigate = useNavigate()
-  // const playlists = props.playlists
-  // const setPlaylists = props.setPlaylists
+  const params = useParams()
+  const playlistId = Number(params.id)
+  console.log(playlistId)
+
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
@@ -17,9 +19,6 @@ function PlaylistDetail(props) {
   const [duration, setDuration] = useState(0)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
-  const params = useParams()
-  const playlistId = Number(params.id)
-
   const BASE_URL = import.meta.env.VITE_API_URL
 
   useEffect(() => {
@@ -27,12 +26,12 @@ function PlaylistDetail(props) {
       try {
         const response = await fetch(BASE_URL + `/api/playlists/${playlistId}`)
         if (!response.ok) {
-          navigate('*')
+          navigate('/*')
           throw new Error("Failed to load playlist:", response.status)
         }
         const data = await response.json()
         if (!data) {
-          navigate('*')
+          navigate('/*')
           throw new Error("Failed to get playlist:", response.status)
         }
         setPlaylist(data)
